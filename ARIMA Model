@@ -1,0 +1,27 @@
+install.packages("forecast")
+library(forecast)
+install.packages("ggplot2")
+library(ggplot2)
+
+gold_arima<-scan("gold.csv")
+gold_arima_timeseries<-ts(gold_arima, start=c(4/22/2003), frequency=52)
+
+plot(gold_arima_timeseries, main="GOLD ARIMA FORECAST", ylab="Price of Gold")
+gold_arima_timeseries_arima<-auto.arima(gold_arima_timeseries)
+gold_arima_timeseries_arima
+autoplot(gold_arima_timeseries_arima)
+
+dec<-decompose(gold_arima_timeseries)
+plot(dec)
+
+
+gold_arima_timeseries_forecasts<-forecast(gold_arima_timeseries_arima, h=52)
+gold_arima_timeseries_forecasts
+plot(gold_arima_timeseries_forecasts)
+
+golddiff1<-diff(gold_arima_timeseries, differences=3)
+acf(golddiff1, lag.max=20, main="Lag of model differences")
+acf(golddiff1, lag.max=20, plot=FALSE)
+plot.ts(golddiff1, main="Plot of Differeneces")
+plot.forecast(gold_arima_timeseries_forecasts, xlab='Gold Forecast', main="Gold FORECAST", ylab="Gold Price",col="orange", shadecols =c("red", "orange"))
+autoplot(gold_arima_timeseries_forecasts, xlab='Gold Forecast', main="Gold FORECAST", ylab="Gold Price",col="orange", shadecols =c("red", "orange"))
